@@ -8,10 +8,17 @@
 											--]]
 
 
+------preposé aux votes-------
+local pre1 = 'steam:'	  --inserer le steam id du préposé 1										
+local pre2 = 'steam:'	  --inserer le steam id du préposé 2										
+											
+											
 
 RegisterServerEvent('elec:recherchedecandidats')
 RegisterServerEvent('elec:voteyes')
 RegisterServerEvent('elec:participateyes')
+RegisterServerEvent('elec:inits')
+RegisterServerEvent('elec:checks')
 
 ----liste des candidats----
 AddEventHandler("elec:recherchedecandidats", function()
@@ -107,3 +114,30 @@ print (player)
         end
     end)
 end
+
+-----------check si presposé-----------
+AddEventHandler('elec:checks',function()
+local source = source
+TriggerEvent('es:getPlayerFromId', source, function(user)
+  
+  local player = user.getIdentifier()
+   
+  if(player == pre1 or player == pre) then
+  TriggerClientEvent("elect:CandidatListeR", source)
+  else
+  TriggerClientEvent("itinerance:notif", source, "~r~Tu n'est pas péposé aux votes!!~s~")
+  end
+end)
+end)
+
+--------------reinitialisation des listes-------------
+AddEventHandler('elec:inits', function()
+local source = source
+MySQL.Async.execute("DELETE FROM elections")
+MySQL.Async.execute("ALTER TABLE elections AUTO_INCREMENT=0")
+MySQL.Async.execute("DELETE FROM listeparticipants")
+MySQL.Async.execute("ALTER TABLE listeparticipants AUTO_INCREMENT=0")
+MySQL.Async.execute("DELETE FROM listevotants")
+MySQL.Async.execute("ALTER TABLE listevotants AUTO_INCREMENT=0")
+TriggerClientEvent("itinerance:notif", source, "~r~Listes élèctorales réinitialisées~s~")
+end)

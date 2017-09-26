@@ -41,9 +41,10 @@ function MenuMairie()
     ClearMenu()
     Menu.addButton("Voter","CandidatListe",nil)
     Menu.addButton("Se présenter","ConfirmParticipate",nil)
+	Menu.addButton("Resultats","check",nil)
 end
 
---On va delander la liste des candidats pour les afficher sur plusieurs bouttons
+--On va demander la liste des candidats pour les afficher sur plusieurs bouttons
 
 function CandidatListe()
 	TriggerServerEvent("elec:recherchedecandidats")-- appel de la liste
@@ -51,10 +52,34 @@ function CandidatListe()
 	MenuTitle = "Voter"
 	ClearMenu()
 	for ind, value in pairs(CANDIDATS) do
-		Menu.addButton(tostring(value.candidatsNom) .. " " .. tostring(value.candidatsPrenom) .. " : " .. tonumber(value.votes), "ConfirmVote", ind) 
+		Menu.addButton(tostring(value.candidatsNom) .. " " .. tostring(value.candidatsPrenom), "ConfirmVote", ind) 
 	end
 		Menu.addButton("Retour","MenuMairie",nil)
 end
+
+---liste des candidats avec resultat--------
+function check()
+ TriggerServerEvent("elec:checks")
+end
+
+RegisterNetEvent ('elect:CandidatListeR')
+AddEventHandler('elect:CandidatListeR', function()
+	TriggerServerEvent("elec:recherchedecandidats")-- appel de la liste
+	ped = GetPlayerPed(-1)
+	MenuTitle = "Resultats"
+	ClearMenu()
+	for ind, value in pairs(CANDIDATS) do
+		Menu.addButton(tostring(value.candidatsNom) .. " " .. tostring(value.candidatsPrenom) .. " : " .. tonumber(value.votes), "", ind) 
+	end
+		Menu.addButton("Reinitialiser les listes","init",nil)
+		Menu.addButton("Retour","MenuMairie",nil)
+end)
+
+------reinitialisation----------
+function init ()
+TriggerServerEvent("elec:inits")
+end
+
 
 --Pour confirmer sa participation aux éléctions
 
